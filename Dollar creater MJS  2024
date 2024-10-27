@@ -1,0 +1,69 @@
+<block type="trade_definition">
+  <!-- Initialize Variables -->
+  <block type="variables_set" inline="true">
+    <field name="VAR">initialStake</field>
+    <value name="VALUE">
+      <block type="math_number">
+        <field name="NUM">1</field> <!-- Starting bet amount -->
+      </block>
+    </value>
+  </block>
+  <block type="variables_set" inline="true">
+    <field name="VAR">amountLoss</field>
+    <value name="VALUE">
+      <block type="math_number">
+        <field name="NUM">0</field>
+      </block>
+    </value>
+  </block>
+  
+  <!-- Bet Placement & Result Check -->
+  <block type="controls_if" id="recovery_condition">
+    <mutation else="1"></mutation>
+    <value name="IF0">
+      <block type="contract_check_result" id="loss_check">
+        <field name="CHECK_RESULT">loss</field>
+      </block>
+    </value>
+    <statement name="DO0">
+      <block type="variables_set" id="update_stake_on_loss">
+        <field name="VAR">stake</field>
+        <value name="VALUE">
+          <block type="math_arithmetic">
+            <field name="OP">MULTIPLY</field>
+            <value name="A">
+              <block type="variables_get">
+                <field name="VAR">amountLoss</field>
+              </block>
+            </value>
+            <value name="B">
+              <block type="math_number">
+                <field name="NUM">2</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <next>
+          <block type="math_change" id="update_amountLoss">
+            <field name="VAR">amountLoss</field>
+            <value name="DELTA">
+              <block type="read_details" id="read_loss">
+                <field name="DETAIL_INDEX">4</field>
+              </block>
+            </value>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <statement name="ELSE">
+      <block type="variables_set" id="reset_stake_after_win">
+        <field name="VAR">stake</field>
+        <value name="VALUE">
+          <block type="variables_get" id="get_initialStake">
+            <field name="VAR">initialStake</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+</block>
